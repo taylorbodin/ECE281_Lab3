@@ -92,16 +92,33 @@ signal ClockBus_sig : STD_LOGIC_VECTOR (26 downto 0);
 --Insert your design's component declaration below	
 --------------------------------------------------------------------------------------
 
-	COMPONENT 	MooreElevatorController_Shell
+-----------------------------------------------------------------------------
+--Moore Elevator Controller Component
+-----------------------------------------------------------------------------
+
+--	COMPONENT MooreElevatorController_Shell
+--	PORT(
+--		clk : in  STD_LOGIC;
+--		reset : in  STD_LOGIC;
+--     stop : in  STD_LOGIC;
+--     up_down : in  STD_LOGIC;
+--     floor : out  STD_LOGIC_VECTOR (3 downto 0)
+--		);
+--	END COMPONENT;
+	
+-----------------------------------------------------------------------------
+--Mealy Elevator Controller Component
+-----------------------------------------------------------------------------
+
+	COMPONENT MealyElevatorController_Shell
 	PORT(
-		clk : in  STD_LOGIC;
-		reset : in  STD_LOGIC;
-      stop : in  STD_LOGIC;
-      up_down : in  STD_LOGIC;
-      floor : out  STD_LOGIC_VECTOR (3 downto 0)
+		clk : in STD_LOGIC;
+		reset : in STD_LOGIC;
+		stop : in STD_LOGIC;
+		up_down : in STD_LOGIC;
+		floor : out STD_LOGIC_VECTOR (3 downto 0)
 		);
 	END COMPONENT;
-
 --------------------------------------------------------------------------------------
 --Insert any required signal declarations below
 --------------------------------------------------------------------------------------
@@ -179,7 +196,23 @@ nibble3 <= "0000";
 -----------------------------------------------------------------------------
 --Instantiate the design you with to implement below and start wiring it up!:
 -----------------------------------------------------------------------------
-	MooreElevatorController: MooreElevatorController_Shell
+
+-----------------------------------------------------------------------------
+--Moore Elevator Controller Component
+-----------------------------------------------------------------------------
+--	MooreElevatorController: MooreElevatorController_Shell
+--	PORT MAP(
+--		clk => ClockBus_sig(25),
+--		reset => btn(3),
+--		stop => switch(0),
+--      up_down => switch(1),
+--      floor => nibble0
+--	);
+
+-----------------------------------------------------------------------------
+--Mealy Elevator Controller Component
+-----------------------------------------------------------------------------
+	MealyElevatorController: MealyElevatorController_Shell
 	PORT MAP(
 		clk => ClockBus_sig(25),
 		reset => btn(3),
@@ -187,6 +220,7 @@ nibble3 <= "0000";
       up_down => switch(1),
       floor => nibble0
 	);
+
 	
 end Behavioral;
 
