@@ -92,7 +92,15 @@ signal ClockBus_sig : STD_LOGIC_VECTOR (26 downto 0);
 --Insert your design's component declaration below	
 --------------------------------------------------------------------------------------
 
-
+	COMPONENT 	MooreElevatorController_Shell
+	PORT(
+		clk : in  STD_LOGIC;
+		reset : in  STD_LOGIC;
+      stop : in  STD_LOGIC;
+      up_down : in  STD_LOGIC;
+      floor : out  STD_LOGIC_VECTOR (3 downto 0)
+		);
+	END COMPONENT;
 
 --------------------------------------------------------------------------------------
 --Insert any required signal declarations below
@@ -125,10 +133,10 @@ LED <= CLOCKBUS_SIG(26 DOWNTO 19);
 --		  Example: if you are not using 7-seg display #3 set nibble3 to "0000"
 --------------------------------------------------------------------------------------
 
-nibble0 <= 
-nibble1 <= 
-nibble2 <= 
-nibble3 <= 
+nibble0 <= "0101";
+nibble1 <= "0000";
+nibble2 <= "0000";
+nibble3 <= "0000";
 
 --This code converts a nibble to a value that can be displayed on 7-segment display #0
 	sseg0: nibble_to_sseg PORT MAP(
@@ -171,7 +179,14 @@ nibble3 <=
 -----------------------------------------------------------------------------
 --Instantiate the design you with to implement below and start wiring it up!:
 -----------------------------------------------------------------------------
-
-
+	MooreElevatorController: MooreElevatorController_Shell
+	PORT MAP(
+		clk => ClockBus_sig(25),
+		reset => btn(3),
+		stop => switch(0),
+      up_down => switch(1),
+      floor => nibble0
+	);
+	
 end Behavioral;
 
