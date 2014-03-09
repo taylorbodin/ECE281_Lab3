@@ -96,34 +96,33 @@ signal ClockBus_sig : STD_LOGIC_VECTOR (26 downto 0);
 --Moore Elevator Controller Component
 -----------------------------------------------------------------------------
 
---	COMPONENT MooreElevatorController_Shell
---	PORT(
---		clk : in  STD_LOGIC;
---		reset : in  STD_LOGIC;
---     stop : in  STD_LOGIC;
---     up_down : in  STD_LOGIC;
---     floor : out  STD_LOGIC_VECTOR (3 downto 0)
---		);
---	END COMPONENT;
-	
+	COMPONENT MooreElevatorController_Shell
+	PORT(
+		clk : in  STD_LOGIC;
+		reset : in  STD_LOGIC;
+     stop : in  STD_LOGIC;
+     up_down : in  STD_LOGIC;
+     floor : out  STD_LOGIC_VECTOR (3 downto 0)
+		);
+	END COMPONENT;
 -----------------------------------------------------------------------------
 --Mealy Elevator Controller Component
 -----------------------------------------------------------------------------
 
-	COMPONENT MealyElevatorController_Shell
-	PORT(
-		clk : in STD_LOGIC;
-		reset : in STD_LOGIC;
-		stop : in STD_LOGIC;
-		up_down : in STD_LOGIC;
-		floor : out STD_LOGIC_VECTOR (3 downto 0)
-		);
-	END COMPONENT;
+--	COMPONENT MealyElevatorController_Shell
+--	PORT(
+--		clk : in STD_LOGIC;
+--		reset : in STD_LOGIC;
+--		stop : in STD_LOGIC;
+--		up_down : in STD_LOGIC;
+--		floor : out STD_LOGIC_VECTOR (3 downto 0)
+--		);
+--	END COMPONENT;
 --------------------------------------------------------------------------------------
 --Insert any required signal declarations below
 --------------------------------------------------------------------------------------
 
-
+signal state_bus : STD_LOGIC_VECTOR (3 downto 0);
 
 begin
 
@@ -150,8 +149,8 @@ LED <= CLOCKBUS_SIG(26 DOWNTO 19);
 --		  Example: if you are not using 7-seg display #3 set nibble3 to "0000"
 --------------------------------------------------------------------------------------
 
---nibble0 <= "0101";
-nibble1 <= "0000";
+--nibble0 <= "0000";
+--nibble1 <= "0000";
 nibble2 <= "0000";
 nibble3 <= "0000";
 
@@ -198,9 +197,46 @@ nibble3 <= "0000";
 -----------------------------------------------------------------------------
 
 -----------------------------------------------------------------------------
+--Process with cases that assigns nibbles based on case
+--I was too lazy to make another component
+-----------------------------------------------------------------------------
+
+nibble0 <= "0010" when (state_bus =   "0001" ) else
+			"0011" when (state_bus =   "0010" ) else
+			"0101" when (state_bus =   "0011" ) else
+			"0111" when (state_bus =   "0100" ) else
+			"0001" when (state_bus =   "0101" ) else
+			"0011" when (state_bus =   "0110" ) else
+			"0111" when (state_bus =   "0111" ) else
+			"1001" when (state_bus =   "1000" ) else
+			"0000";
+			
+nibble1 <= "0000" when (state_bus =   "0001" ) else
+			"0000" when (state_bus =   "0010" ) else
+			"0000" when (state_bus =   "0011" ) else
+			"0000" when (state_bus =   "0100" ) else
+			"0001" when (state_bus =   "0101" ) else
+			"0001" when (state_bus =   "0110" ) else
+			"0001" when (state_bus =   "0111" ) else
+			"0001" when (state_bus =   "1000" ) else
+			"0000";
+
+-----------------------------------------------------------------------------
 --Moore Elevator Controller Component
 -----------------------------------------------------------------------------
---	MooreElevatorController: MooreElevatorController_Shell
+	MooreElevatorController: MooreElevatorController_Shell
+	PORT MAP(
+		clk => ClockBus_sig(25),
+		reset => btn(3),
+		stop => switch(0),
+      up_down => switch(1),
+      floor => state_bus
+	);
+
+-----------------------------------------------------------------------------
+--Mealy Elevator Controller Component
+-----------------------------------------------------------------------------
+--	MealyElevatorController: MealyElevatorController_Shell
 --	PORT MAP(
 --		clk => ClockBus_sig(25),
 --		reset => btn(3),
@@ -208,18 +244,6 @@ nibble3 <= "0000";
 --      up_down => switch(1),
 --      floor => nibble0
 --	);
-
------------------------------------------------------------------------------
---Mealy Elevator Controller Component
------------------------------------------------------------------------------
-	MealyElevatorController: MealyElevatorController_Shell
-	PORT MAP(
-		clk => ClockBus_sig(25),
-		reset => btn(3),
-		stop => switch(0),
-      up_down => switch(1),
-      floor => nibble0
-	);
 
 	
 end Behavioral;

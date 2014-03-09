@@ -33,7 +33,7 @@ architecture Behavioral of MooreElevatorController_Shell is
 --Below you create a new variable type! You also define what values that 
 --variable type can take on. Now you can assign a signal as 
 --"floor_state_type" the same way you'd assign a signal as std_logic 
-type floor_state_type is (floor1, floor2, floor3, floor4);
+type floor_state_type is (floor1, floor2, floor3, floor4, floor5, floor6, floor7, floor8);
 
 --Here you create a variable "floor_state" that can take on the values
 --defined above. Neat-o!
@@ -91,11 +91,48 @@ begin
 					else
 						floor_state <= floor3; 	
 					end if;
+					
 				when floor4 =>
-					if (up_down='0' and stop='0') then 
-						floor_state <= floor3; 	
-					else 
+					if (up_down='1' and stop='0') then 
+						floor_state <= floor5;
+					elsif (up_down='0' and stop='0') then 
+						floor_state <= floor3;	
+					else
+						floor_state <= floor4; 	
+					end if;
+					
+				when floor5 =>
+					if (up_down='1' and stop='0') then 
+						floor_state <= floor6;
+					elsif (up_down='0' and stop='0') then 
 						floor_state <= floor4;	
+					else
+						floor_state <= floor5; 	
+					end if;
+					
+				when floor6 =>
+					if (up_down='1' and stop='0') then 
+						floor_state <= floor7;
+					elsif (up_down='0' and stop='0') then 
+						floor_state <= floor5;	
+					else
+						floor_state <= floor6; 	
+					end if;
+					
+				when floor7 =>
+					if (up_down='1' and stop='0') then 
+						floor_state <= floor8;
+					elsif (up_down='0' and stop='0') then 
+						floor_state <= floor6;	
+					else
+						floor_state <= floor7; 	
+					end if;
+					
+				when floor8 =>
+					if (up_down='0' and stop='0') then 
+						floor_state <= floor7; 	
+					else 
+						floor_state <= floor8;	
 					end if;
 				
 				--This line accounts for phantom states
@@ -111,6 +148,10 @@ floor <= "0001" when (floor_state =   floor1 ) else
 			"0010" when (floor_state =   floor2 ) else
 			"0011" when (floor_state =   floor3 ) else
 			"0100" when (floor_state =   floor4 ) else
+			"0101" when (floor_state =   floor5 ) else
+			"0110" when (floor_state =   floor6 ) else
+			"0111" when (floor_state =   floor7 ) else
+			"1000" when (floor_state =   floor8 ) else
 			"0001";
 
 end Behavioral;
