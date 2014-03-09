@@ -133,7 +133,7 @@ LED <= CLOCKBUS_SIG(26 DOWNTO 19);
 --		  Example: if you are not using 7-seg display #3 set nibble3 to "0000"
 --------------------------------------------------------------------------------------
 
-nibble0 <= "0101";
+--nibble0 <= "0101";
 nibble1 <= "0000";
 nibble2 <= "0000";
 nibble3 <= "0000";
