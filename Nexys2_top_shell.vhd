@@ -98,10 +98,10 @@ signal ClockBus_sig : STD_LOGIC_VECTOR (26 downto 0);
 
 	COMPONENT MooreElevatorController_Shell
 	PORT(
-		clk : in  STD_LOGIC;
-		reset : in  STD_LOGIC;
+	  clk : in  STD_LOGIC;
+	  reset : in  STD_LOGIC;
      stop : in  STD_LOGIC;
-     up_down : in  STD_LOGIC;
+     target_floor : in  STD_LOGIC_VECTOR (3 downto 0);
      floor : out  STD_LOGIC_VECTOR (3 downto 0)
 		);
 	END COMPONENT;
@@ -122,7 +122,7 @@ signal ClockBus_sig : STD_LOGIC_VECTOR (26 downto 0);
 --Insert any required signal declarations below
 --------------------------------------------------------------------------------------
 
-signal state_bus : STD_LOGIC_VECTOR (3 downto 0);
+signal state_bus, target_floor : STD_LOGIC_VECTOR (3 downto 0);
 
 begin
 
@@ -149,8 +149,8 @@ LED <= CLOCKBUS_SIG(26 DOWNTO 19);
 --		  Example: if you are not using 7-seg display #3 set nibble3 to "0000"
 --------------------------------------------------------------------------------------
 
---nibble0 <= "0000";
---nibble1 <= "0000";
+nibble0 <= state_bus;
+nibble1 <= "0000";
 nibble2 <= "0000";
 nibble3 <= "0000";
 
@@ -197,29 +197,38 @@ nibble3 <= "0000";
 -----------------------------------------------------------------------------
 
 -----------------------------------------------------------------------------
---Process with cases that assigns nibbles based on case
---I was too lazy to make another component
+--Assigns target floor based on switch inputs
 -----------------------------------------------------------------------------
 
-nibble0 <= "0010" when (state_bus =   "0001" ) else
-			"0011" when (state_bus =   "0010" ) else
-			"0101" when (state_bus =   "0011" ) else
-			"0111" when (state_bus =   "0100" ) else
-			"0001" when (state_bus =   "0101" ) else
-			"0011" when (state_bus =   "0110" ) else
-			"0111" when (state_bus =   "0111" ) else
-			"1001" when (state_bus =   "1000" ) else
-			"0000";
-			
-nibble1 <= "0000" when (state_bus =   "0001" ) else
-			"0000" when (state_bus =   "0010" ) else
-			"0000" when (state_bus =   "0011" ) else
-			"0000" when (state_bus =   "0100" ) else
-			"0001" when (state_bus =   "0101" ) else
-			"0001" when (state_bus =   "0110" ) else
-			"0001" when (state_bus =   "0111" ) else
-			"0001" when (state_bus =   "1000" ) else
-			"0000";
+target_floor(0) <= switch(4);
+target_floor(1) <= switch(5);
+target_floor(2) <= switch(6);
+target_floor(3) <= switch(7);
+
+-----------------------------------------------------------------------------
+--Assigns nibbles based on case to allow for multi-digit number to be 
+--displayed i.e. prime functionality
+-----------------------------------------------------------------------------
+
+--nibble0 <= "0010" when (state_bus =   "0001" ) else
+--			"0011" when (state_bus =   "0010" ) else
+--			"0101" when (state_bus =   "0011" ) else
+--			"0111" when (state_bus =   "0100" ) else
+--			"0001" when (state_bus =   "0101" ) else
+--			"0011" when (state_bus =   "0110" ) else
+--			"0111" when (state_bus =   "0111" ) else
+--			"1001" when (state_bus =   "1000" ) else
+--			"0000";
+--			
+--nibble1 <= "0000" when (state_bus =   "0001" ) else
+--			"0000" when (state_bus =   "0010" ) else
+--			"0000" when (state_bus =   "0011" ) else
+--			"0000" when (state_bus =   "0100" ) else
+--			"0001" when (state_bus =   "0101" ) else
+--			"0001" when (state_bus =   "0110" ) else
+--			"0001" when (state_bus =   "0111" ) else
+--			"0001" when (state_bus =   "1000" ) else
+--			"0000";
 
 -----------------------------------------------------------------------------
 --Moore Elevator Controller Component
@@ -229,7 +238,7 @@ nibble1 <= "0000" when (state_bus =   "0001" ) else
 		clk => ClockBus_sig(25),
 		reset => btn(3),
 		stop => switch(0),
-      up_down => switch(1),
+      target_floor => target_floor,
       floor => state_bus
 	);
 

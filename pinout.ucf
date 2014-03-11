@@ -25,7 +25,7 @@ NET "switch(3)" LOC=K17;
 NET "switch(2)" LOC=K18;
 NET "switch(1)" LOC=H18;
 NET "switch(0)" LOC=G18; 
-#NET "switch(0)" CLOCK_DEDICATED_ROUTE = FALSE; Uncomment for mealy machine implementation
+#NET "switch(0)" CLOCK_DEDICATED_ROUTE = FALSE; #Uncomment for mealy machine implementation
 
 NET "led(7)" LOC=R4;
 NET "led(6)" LOC=F4;

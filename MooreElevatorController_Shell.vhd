@@ -13,7 +13,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
+use IEEE.NUMERIC_STD.ALL;
 
 -- Uncomment the following library declaration if instantiating
 -- any Xilinx primitives in this code.
@@ -24,7 +24,7 @@ entity MooreElevatorController_Shell is
     Port ( clk : in  STD_LOGIC;
            reset : in  STD_LOGIC;
            stop : in  STD_LOGIC;
-           up_down : in  STD_LOGIC;
+           target_floor : in  STD_LOGIC_VECTOR (3 downto 0);
            floor : out  STD_LOGIC_VECTOR (3 downto 0));
 end MooreElevatorController_Shell;
 
@@ -60,7 +60,7 @@ begin
 				when floor1 =>
 					--if up_down is set to "go up" and stop is set to 
 					--"don't stop" which floor do we want to go to?
-					if (up_down='1' and stop='0') then 
+					if (target_floor > "0001" and stop='0') then 
 						--floor2 right?? This makes sense!
 						floor_state <= floor2;
 					--otherwise we're going to stay at floor1
@@ -71,70 +71,70 @@ begin
 				when floor2 => 
 					--if up_down is set to "go up" and stop is set to 
 					--"don't stop" which floor do we want to go to?
-					if (up_down='1' and stop='0') then 
+					if (target_floor > "0010" and stop='0') then 
 						floor_state <= floor3; 			
 					--if up_down is set to "go down" and stop is set to 
 					--"don't stop" which floor do we want to go to?
-					elsif (up_down='0' and stop='0') then 
+					elsif (target_floor < "0010" and stop='0') then 
 						floor_state <= floor1;
 					--otherwise we're going to stay at floor2
 					else
 						floor_state <= floor2;
 					end if;
-				
+
 --COMPLETE THE NEXT STATE LOGIC ASSIGNMENTS FOR FLOORS 3 AND 4
 				when floor3 =>
-					if (up_down='1' and stop='0') then 
+					if (target_floor > "0011" and stop='0') then 
 						floor_state <= floor4;
-					elsif (up_down='0' and stop='0') then 
+					elsif (target_floor < "0011" and stop='0') then 
 						floor_state <= floor2;	
 					else
 						floor_state <= floor3; 	
 					end if;
-					
+
 				when floor4 =>
-					if (up_down='1' and stop='0') then 
+					if (target_floor > "0100" and stop='0') then 
 						floor_state <= floor5;
-					elsif (up_down='0' and stop='0') then 
+					elsif (target_floor < "0100" and stop='0') then 
 						floor_state <= floor3;	
 					else
 						floor_state <= floor4; 	
 					end if;
-					
+
 				when floor5 =>
-					if (up_down='1' and stop='0') then 
+					if (target_floor > "0101" and stop='0') then 
 						floor_state <= floor6;
-					elsif (up_down='0' and stop='0') then 
+					elsif (target_floor < "0101" and stop='0') then 
 						floor_state <= floor4;	
 					else
 						floor_state <= floor5; 	
 					end if;
-					
+
 				when floor6 =>
-					if (up_down='1' and stop='0') then 
+					if (target_floor > "0110" and stop='0') then 
 						floor_state <= floor7;
-					elsif (up_down='0' and stop='0') then 
+					elsif (target_floor < "0110" and stop='0') then 
 						floor_state <= floor5;	
 					else
 						floor_state <= floor6; 	
 					end if;
-					
+
 				when floor7 =>
-					if (up_down='1' and stop='0') then 
+					if (target_floor > "0111" and stop='0') then 
 						floor_state <= floor8;
-					elsif (up_down='0' and stop='0') then 
+					elsif (target_floor < "0111" and stop='0') then 
 						floor_state <= floor6;	
 					else
 						floor_state <= floor7; 	
 					end if;
-					
+
 				when floor8 =>
-					if (up_down='0' and stop='0') then 
+					if (target_floor < "1000" and stop='0') then 
 						floor_state <= floor7; 	
 					else 
 						floor_state <= floor8;	
 					end if;
-				
+
 				--This line accounts for phantom states
 				when others =>
 					floor_state <= floor1;
