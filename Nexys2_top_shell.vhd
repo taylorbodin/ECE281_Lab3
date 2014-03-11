@@ -15,7 +15,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
+use IEEE.NUMERIC_STD.ALL;
 
 -- Uncomment the following library declaration if instantiating
 -- any Xilinx primitives in this code.
@@ -124,12 +124,14 @@ signal ClockBus_sig : STD_LOGIC_VECTOR (26 downto 0);
 
 signal state_bus, target_floor : STD_LOGIC_VECTOR (3 downto 0);
 
+signal up_lights, down_lights : STD_LOGIC_VECTOR (7 downto 0);
+
 begin
 
 ----------------------------
 --code below tests the LEDs:
 ----------------------------
-LED <= CLOCKBUS_SIG(26 DOWNTO 19);
+--LED <= CLOCKBUS_SIG(26 DOWNTO 19);
 
 --------------------------------------------------------------------------------------------	
 --This code instantiates the Clock Divider. Reference the Clock Divider Module for more info
@@ -196,6 +198,27 @@ nibble3 <= "0000";
 --Instantiate the design you with to implement below and start wiring it up!:
 -----------------------------------------------------------------------------
 
+-----------------------------------------------------------------------------
+--Defining how the lights should light 
+-----------------------------------------------------------------------------
+up_lights <= CLOCKBUS_SIG(26 DOWNTO 19);
+
+down_lights(0) <= CLOCKBUS_SIG(26);
+down_lights(1) <= CLOCKBUS_SIG(25);
+down_lights(2) <= CLOCKBUS_SIG(24);
+down_lights(3) <= CLOCKBUS_SIG(23);
+down_lights(4) <= CLOCKBUS_SIG(22);
+down_lights(5) <= CLOCKBUS_SIG(21);
+down_lights(6) <= CLOCKBUS_SIG(20);
+down_lights(7) <= CLOCKBUS_SIG(19);
+
+-----------------------------------------------------------------------------
+--Logic for setting the LED's depending on UP or DOWN motion
+-----------------------------------------------------------------------------
+
+LED <= up_lights when (state_bus < target_floor and switch(0) = '0' ) else
+		 down_lights when (state_bus > target_floor and switch(0) = '0' ) else
+			"00000000";
 -----------------------------------------------------------------------------
 --Assigns target floor based on switch inputs
 -----------------------------------------------------------------------------
